@@ -2,10 +2,7 @@
 - name: Install Nginx on all servers and set hostname
   hosts: webservers
   become: yes
-
-  vars:
-    new_hostname: "your-desired-hostname"
-    
+  
   tasks:
     - name: Set hostname
       hostname:
