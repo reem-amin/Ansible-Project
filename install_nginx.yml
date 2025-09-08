@@ -4,8 +4,8 @@
   become: yes
 
   vars:
-    new_hostname: "your-desired-hostname"  # حطي هنا اسم الهوست اللي عايزة
-
+    new_hostname: "your-desired-hostname"
+    
   tasks:
     - name: Set hostname
       hostname:
