@@ -23,13 +23,9 @@
         state: started
         enabled: yes
 
-    - name: Replace Nginx welcome message
-      copy:
-        content: |
-          <html>
-          <head><title>Welcome Ahmed</title></head>
-          <body><h1>Welcome to My Custom Page!</h1></body>
-          </html>
+    - name: Deploy custom Nginx welcome page using template
+      template:
+        src: index.html.j2
         dest: /var/www/html/index.nginx-debian.html
         owner: root
         group: root
