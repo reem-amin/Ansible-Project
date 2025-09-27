@@ -1,0 +1,31 @@
+- hosts: pxc_nodes
+  become: true
+  vars:
+   wsrep_cluster_name: my_pxc_cluster
+    cluster_nodes:
+      - 11.1.1.245
+      - 11.1.1.246
+      - 11.1.1.247
+  tasks:
+    - name: Configure PXC my.cnf
+      copy:
+        dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+        content: |
+          [mysqld]
+          wsrep_provider=/usr/lib/galera4/libgalera_smm.so
+          wsrep_cluster_name={{ cluster_name }}
+          wsrep_cluster_address=gcomm://{{ cluster_nodes | join(',') }}
+          wsrep_node_address={{ inventory_hostname }}
+          wsrep_node_name={{ inventory_hostname }}
+          pxc_strict_mode=ENFORCING
+          binlog_format=ROW
+          default_storage_engine=InnoDB
+          innodb_autoinc_lock_mode=2
+          wsrep_sst_method=rsync
+      notify: Restart MySQL
+
+  handlers:
+    - name: Restart MySQL
+      service:
+        name: mysql
+        state: restarted
