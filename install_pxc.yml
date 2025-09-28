@@ -57,10 +57,10 @@
     #- hosts: 11.1.1.245
  # become: true
   #tasks:
-    - name: Stop MySQL if running
-      service:
-        name: mysql
-        state: stopped
+    #- name: Stop MySQL if running
+     # service:
+      #  name: mysql
+       # state: stopped
 
    # - name: Bootstrap first MySQL node
     #  shell: mysqld --bootstrap --wsrep-new-cluster &
