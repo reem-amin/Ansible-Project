@@ -54,32 +54,44 @@
         group: root
         mode: '0644'
 
-- hosts: 11.1.1.245
-  become: true
-  tasks:
+    #- hosts: 11.1.1.245
+ # become: true
+  #tasks:
     - name: Stop MySQL if running
       service:
         name: mysql
         state: stopped
 
-    - name: Bootstrap first MySQL node
-      shell: mysqld --bootstrap --wsrep-new-cluster &
-      args:
-        creates: /var/lib/mysql/auto.cnf
+   # - name: Bootstrap first MySQL node
+    #  shell: mysqld --bootstrap --wsrep-new-cluster &
+     # args:
+      #  creates: /var/lib/mysql/auto.cnf
 
-- hosts: pxc_nodes:!11.1.1.245
-  become: true
-  vars:
-        cluster_nodes: "11.1.1.245,11.1.1.246,11.1.1.247"
+#- hosts: pxc_nodes:!11.1.1.245
+ # become: true
+  #vars:
+   #     cluster_nodes: "11.1.1.245,11.1.1.246,11.1.1.247"|
 
-  tasks:
-    - name: restart MySQL if running
+   - name: Bootstrap first MySQL node (index 0)
+      service:
+        name: mysql@bootstrap
+        state: started
+      when: groups['pxc_nodes'].index(inventory_hostname) == 0
+   
+    - name: Restart MySQL service on other nodes (index 1+)
       service:
         name: mysql
         state: restarted
+      when: groups['pxc_nodes'].index(inventory_hostname) > 0
+  
+  #tasks:
+    #- name: restart MySQL if running
+      #service:
+        #name: mysql
+        #state: restarted
 
-    - name: Join MySQL node to cluster
-      shell: mysqld --wsrep-cluster-address="gcomm://{{ cluster_nodes }}" &
-      args:
-        creates: /var/lib/mysql/auto.cnf
+    #- name: Join MySQL node to cluster
+     # shell: mysqld --wsrep-cluster-address="gcomm://{{ cluster_nodes }}" &
+      #args:
+       # creates: /var/lib/mysql/auto.cnf
 
