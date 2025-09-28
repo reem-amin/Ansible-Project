@@ -74,7 +74,7 @@
 
    - name: Bootstrap first MySQL node (index 0)
       service:
-        name: mysql
+        name: mysql@bootstrap
         state: started
       when: groups['pxc_nodes'].index(inventory_hostname) == 0
    
